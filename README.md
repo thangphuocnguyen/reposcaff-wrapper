@@ -73,6 +73,7 @@ cd /tmp/reposcaff-wrapper
 # Edit default.xml to add/remove your local_fs sub-projects
 
 # 3. Run the scaffolding script with your target workspace absolute path
+#    (Optional: Append '--force-sync' if you are rerunning and hit a sync conflict)
 just -f tools/repo_scaffold.just run /path/to/your/workspace/wrapper
 
 # 4. Start Developing

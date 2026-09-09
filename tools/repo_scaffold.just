@@ -1,5 +1,6 @@
 # Initialize an Offline-First Monorepo Workspace automatically
-run TARGET_WORKSPACE_PATH:
+# Usage: just -f tools/repo_scaffold.just run <path> [--force-sync]
+run TARGET_WORKSPACE_PATH FORCE_SYNC="false":
     #!/usr/bin/env python3
     # Note: Using Python 3 here is 100% safe and cross-platform (Linux/macOS).
     # The Google Repo Tool strictly requires Python 3.6+, meaning any environment 
@@ -11,6 +12,9 @@ run TARGET_WORKSPACE_PATH:
     os.chdir("..")
 
     target_workspace = os.path.abspath("{{TARGET_WORKSPACE_PATH}}")
+    force_sync_arg = "{{FORCE_SYNC}}".strip()
+    is_force = force_sync_arg == "--force-sync"
+    
     git_server = os.path.join(target_workspace, ".local", "local-git-server")
     os.makedirs(git_server, exist_ok=True)
 
@@ -67,7 +71,13 @@ run TARGET_WORKSPACE_PATH:
     print("🔄 Synchronizing workspace using Google Repo Tool...")
     manifest_url = f"file://{manifest_repo}"
     subprocess.run(['repo', 'init', '-u', manifest_url, '-b', 'main'], cwd=target_workspace, check=True)
-    subprocess.run(['repo', 'sync'], cwd=target_workspace, check=True)
+    
+    sync_cmd = ['repo', 'sync']
+    if is_force:
+        print("⚠️ Force sync enabled. Overwriting existing work trees if necessary...")
+        sync_cmd.append('--force-sync')
+        
+    subprocess.run(sync_cmd, cwd=target_workspace, check=True)
 
     print(f"\n✅ Scaffold complete! Start developing by running:")
     print(f"   cd {target_workspace}")
