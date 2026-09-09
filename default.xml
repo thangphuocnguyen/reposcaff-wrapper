@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+  <!-- REMOTEs ============================================================ -->
+  <!-- ORIGIN REMOTE -->
+  <remote name="origin" fetch="git@git.h3x.internal:lab" />
+
+  <!-- LOCAL FIRST REMOTE using Relative Path -->
+  <!-- fetch="." resolves to the parent directory of the manifest repository -->
+  <remote name="local_fs" fetch="." />
+
+  <default remote="origin" revision="main" sync-j="4" />
+  <!-- REMOTEs ============================================================ -->
+
+
+  <!-- MIRROR ============================================================== -->
+  <!-- THIS WAS A CUSTOMIZED WAY TO UTILIZED THE REPO TO BE A META/OPS SPACE FOR THE WHOLE PROJECT -->
+  <!-- _meta automatically maps to local-manifests.git and creates symlinks for core config files -->
+  <project name="local-manifests.git" path="_meta" remote="local_fs" revision="main">
+    <!-- LINK justfile and .gitignore to WRAPPER (Parent) FOR WHOLE WORKSPACE CONTROL -->
+    <linkfile src="justfile" dest="justfile" />
+    <linkfile src=".gitignore" dest=".gitignore" />
+  </project>
+  <!-- MIRROR ============================================================== -->
+
+  <!-- SUB_PROJECTS USING LOCAL FIRST REMOTE -->
+  <project name="local-docs.git" path="docs" remote="local_fs" revision="main" />
+  <project name="local-works.git" path="works" remote="local_fs" revision="main" />
+  <project name="local-tmps.git" path="tmps" remote="local_fs" revision="main" />
+  
+  <!-- OTHER PROJECTS -->
+  <!-- AGENTS -->
+  <project name="h3x-agents.git" path=".agents" revision="main" />
+</manifest>
